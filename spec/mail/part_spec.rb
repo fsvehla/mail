@@ -10,6 +10,15 @@ describe Mail::Part do
     part.content_id.should_not be_nil
   end
   
+  it "should not put content-ids into non-inline attachments" do
+    part = Mail::Part.new(:content_disposition => 'attachment; filename=File') do
+      body "PDF"
+    end
+
+    part.to_s
+    part.content_id.should be_nil
+  end
+
   it "should preserve any content id that you put into it" do
     part = Mail::Part.new do
       content_id "<thisis@acontentid>"
