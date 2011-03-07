@@ -38,7 +38,7 @@ module Mail
     end
     
     def add_required_fields
-      add_content_id unless has_content_id? || attachment?
+      add_content_id unless has_content_id? || (attachment? && !inline?)
       super
     end
     
