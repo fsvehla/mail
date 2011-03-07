@@ -76,7 +76,7 @@ module Mail
       end
 
       attachment = Part.new(hash)
-      attachment.add_content_id(hash[:content_id])
+      attachment.add_content_id(hash[:content_id]) if (attachment.attachment? && attachment.inline?)
 
       @parts_list << attachment
     end
