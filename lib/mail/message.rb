@@ -1,4 +1,6 @@
 # encoding: utf-8
+require "yaml"
+
 module Mail
   # The Message class provides a single point of access to all things to do with an
   # email message.
@@ -240,9 +242,9 @@ module Mail
     #
     # Returns self
     def deliver!
-      delivery_method.deliver!(self)
+      response = delivery_method.deliver!(self)
       inform_observers
-      self
+      delivery_method.settings[:return_response] ? response : self
     end
 
     def delivery_method(method = nil, settings = {})
@@ -268,7 +270,7 @@ module Mail
           reply.references ||= bracketed_message_id
         end
         if subject
-          reply.subject = "RE: #{subject}"
+          reply.subject = subject =~ /^Re:/i ? subject : "RE: #{subject}"
         end
         if reply_to || from
           reply.to = self[reply_to ? :reply_to : :from].to_s
@@ -1677,6 +1679,7 @@ module Mail
       self.body = ''
       text_part = Mail::Part.new({:content_type => 'text/plain;',
                                   :body => text})
+      text_part.charset = charset unless @defaulted_charset
       self.body << text_part
     end
 
@@ -1706,6 +1709,45 @@ module Mail
       buffer << "\r\n"
       buffer << body.encoded(content_transfer_encoding)
       buffer
+    end
+
+    def to_yaml(opts = {})
+      hash = {}
+      hash['headers'] = {}
+      header.fields.each do |field|
+        hash['headers'][field.name] = field.value
+      end
+      hash['delivery_handler'] = delivery_handler.to_s if delivery_handler
+      hash['transport_encoding'] = transport_encoding.to_s
+      special_variables = [:@header, :@delivery_handler, :@transport_encoding]
+      (instance_variables.map(&:to_sym) - special_variables).each do |var|
+        hash[var.to_s] = instance_variable_get(var)
+      end
+      hash.to_yaml(opts)
+    end
+
+    def self.from_yaml(str)
+      hash = YAML.load(str)
+      m = Mail::Message.new(:headers => hash['headers'])
+      hash.delete('headers')
+      hash.each do |k,v|
+        case
+        when k == 'delivery_handler'
+          begin
+            m.delivery_handler = Object.const_get(v) unless v.blank?
+          rescue NameError
+          end
+        when k == 'transport_encoding'
+          m.transport_encoding(v)
+        when k =~ /^@/
+          m.instance_variable_set(k.to_sym, v)
+        end
+      end
+      m
+    end
+
+    def self.from_hash(hash)
+      Mail::Message.new(hash)
     end
 
     def to_s
@@ -1906,7 +1948,7 @@ module Mail
     end
 
     def init_with_hash(hash)
-      passed_in_options = hash.with_indifferent_access
+      passed_in_options = IndifferentHash.new(hash)
       self.raw_source = ''
 
       @header = Mail::Header.new

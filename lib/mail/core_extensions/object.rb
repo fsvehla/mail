@@ -2,16 +2,12 @@
 
 # This is not loaded if ActiveSupport is already loaded
 
-class NilClass #:nodoc:
+class Object
   def blank?
-    true
-  end
-
-  def to_crlf
-    ''
-  end
-
-  def to_lf
-    ''
+    if respond_to?(:empty?)
+      empty?
+    else
+     !self
+    end
   end
 end
