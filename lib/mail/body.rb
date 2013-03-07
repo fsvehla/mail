@@ -6,7 +6,7 @@ module Mail
   # The body is where the text of the email is stored.  Mail treats the body
   # as a single object.  The body itself has no information about boundaries
   # used in the MIME standard, it just looks at it's content as either a single
-  # block of text, or (if it is a multipart message) as an array of blocks o text.
+  # block of text, or (if it is a multipart message) as an array of blocks of text.
   # 
   # A body has to be told to split itself up into a multipart message by calling
   # #split with the correct boundary.  This is because the body object has no way
@@ -257,7 +257,7 @@ module Mail
     
     def split!(boundary)
       self.boundary = boundary
-      parts = raw_source.split("--#{boundary}")
+      parts = raw_source.split(/--#{Regexp.escape(boundary)}(?=(?:--)?\s*$)/)
       # Make the preamble equal to the preamble (if any)
       self.preamble = parts[0].to_s.strip
       # Make the epilogue equal to the epilogue (if any)

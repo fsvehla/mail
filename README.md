@@ -29,7 +29,7 @@ Donations
 -------------
 
 Mail has been downloaded millions of times, by people around the world, in fact,
-it represents more than 1% of *all* gems downloaded.  
+it represents more than 1% of *all* gems downloaded.
 
 It is (like all open source software) a labour of love and something I am doing
 with my own free time.  If you would like to say thanks, please feel free to
@@ -42,14 +42,15 @@ me a nice email :)
 Compatibility
 -------------
 
-Mail is tested by Travis (![Travis Build Status](https://secure.travis-ci.org/mikel/mail.png "Build Status")) and works on the following platforms:
+Mail is tested by Travis ([![Travis Build Status](https://travis-ci.org/mikel/mail.png "Build Status")](https://travis-ci.org/mikel/mail)) and works on the [following platforms](https://github.com/mikel/mail/blob/master/.travis.yml)
 
-* jruby-1.6.5.1 [ x86_64 ]
-* rbx-head-d18 [ x86_64 ]
-* ree-1.8.7-2011.03 [ i686 ]
-* ruby-1.8.7-p357 [ i686 ]
+* ruby-1.8.7-p370 [ i686 ]
 * ruby-1.9.2-p290 [ x86_64 ]
-* ruby-1.9.3-p0 [ x86_64 ]
+* ruby-1.9.3-p327 [ x86_64 ]
+* jruby-1.6.8 [ x86_64 ]
+* jruby-1.7.0 [ x86_64 ]
+* rbx-d18 [ x86_64 ]
+* rbx-d19 [ x86_64 ]
 
 Discussion
 ----------
@@ -104,7 +105,7 @@ It also means you can be sure Mail will behave correctly.
 API Policy
 ----------
 
-No API removals within a single point release.  All removals to be depreciated with
+No API removals within a single point release.  All removals to be deprecated with
 warnings for at least one MINOR point release before removal.
 
 Also, all private or protected methods to be declared as such - though this is still I/P.
@@ -294,7 +295,7 @@ The most recent email:
 ```ruby
 Mail.all    #=> Returns an array of all emails
 Mail.first  #=> Returns the first unread email
-Mail.last   #=> Returns the first unread email
+Mail.last   #=> Returns the last unread email
 ```
 
 The first 10 emails sorted by date in ascending order:
@@ -641,7 +642,7 @@ License
 
 (The MIT License)
 
-Copyright (c) 2009, 2010, 2011, 2012
+Copyright (c) 2009, 2010, 2011, 2012 Mikel Lindsaar
 
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the

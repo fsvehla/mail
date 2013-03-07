@@ -18,7 +18,7 @@ module Mail
   # 
   #   Mail.all    #=> Returns an array of all emails
   #   Mail.first  #=> Returns the first unread email
-  #   Mail.last   #=> Returns the first unread email
+  #   Mail.last   #=> Returns the last unread email
   # 
   # You can also pass options into Mail.find to locate an email in your pop mailbox
   # with the following options:
@@ -32,7 +32,7 @@ module Mail
   #   #=> Returns the first 10 emails in ascending order
   # 
   class POP3 < Retriever
-    require 'net/pop'
+    require 'net/pop' unless defined?(Net::POP)
 
     def initialize(values)
       self.settings = { :address              => "localhost",
